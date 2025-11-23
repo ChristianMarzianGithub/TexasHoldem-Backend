@@ -1,5 +1,6 @@
 package com.example.poker.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ public class Table {
     private final int smallBlind;
     private final int bigBlind;
     private final int initialStack;
+    @JsonIgnore
     private Deck deck;
 
     public Table(int smallBlind, int bigBlind, int initialStack) {

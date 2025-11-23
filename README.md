@@ -31,6 +31,7 @@ For a machine-readable description of every endpoint, see `openapi/openapi.yaml`
 - `initialStack` must be large enough to post both blinds (at least `2 * bigBlind`).
 - Requests missing a body or containing invalid blind values return `400 Bad Request` with a descriptive message rather than
   a generic server error.
+- Table responses expose configuration and seating only; internal deck state is always hidden from API consumers.
 
 ### Testing
 ```bash
