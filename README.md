@@ -44,7 +44,11 @@ For a machine-readable description of every endpoint, see `openapi/openapi.yaml`
 mvn test
 ```
 Tests include basic flow coverage for blinds, turn order, and action validation. Ensure bots act first in heads-up situations
-before submitting a human action.
+before submitting a human action. Bot turn handling now halts once the next actor is human to avoid advancing through an entire
+hand without input.
+
+The Maven compiler is configured with the `-parameters` flag so Spring can reliably bind `@PathVariable` arguments without
+explicit names; keep this enabled when adjusting build settings.
 
 ## Frontend (React + Vite + Material UI)
 Frontend lives in `/frontend` and communicates with the backend API.

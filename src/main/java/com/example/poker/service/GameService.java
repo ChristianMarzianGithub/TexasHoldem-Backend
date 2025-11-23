@@ -143,6 +143,10 @@ public class GameService {
                 } else {
                     moveToNextPlayer(table, state);
                 }
+                Player next = table.getPlayers().get(state.getCurrentPlayerIndex());
+                if (next.getType() != PlayerType.BOT) {
+                    break;
+                }
             } else {
                 break;
             }

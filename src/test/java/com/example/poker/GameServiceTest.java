@@ -65,6 +65,16 @@ class GameServiceTest {
     }
 
     @Test
+    void botsStopWhenHumanTurnReached() {
+        gameService.startGame(table.getId());
+        gameService.botsAct(table.getId());
+        GameState state = gameService.getGameState(table.getId(), hero.getId()).getState();
+        assertThat(state.getPhase()).isNotEqualTo(GamePhase.FINISHED);
+        Player current = table.getPlayers().get(state.getCurrentPlayerIndex());
+        assertThat(current.getType()).isEqualTo(PlayerType.HUMAN);
+    }
+
+    @Test
     void rejectsMissingTableRequest() {
         assertThatThrownBy(() -> gameService.createTable(null))
                 .isInstanceOf(ResponseStatusException.class)
