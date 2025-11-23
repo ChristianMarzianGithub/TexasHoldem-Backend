@@ -25,6 +25,11 @@ mvn spring-boot:run
 
 For a machine-readable description of every endpoint, see `openapi/openapi.yaml`.
 
+#### Table creation requirements
+- `smallBlind` and `bigBlind` must be positive.
+- `bigBlind` must be greater than `smallBlind`.
+- `initialStack` must be large enough to post both blinds (at least `2 * bigBlind`).
+
 ### Testing
 ```bash
 mvn test

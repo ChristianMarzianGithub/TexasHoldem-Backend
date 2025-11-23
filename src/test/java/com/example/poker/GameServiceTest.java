@@ -7,8 +7,10 @@ import com.example.poker.service.GameService;
 import com.example.poker.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class GameServiceTest {
 
@@ -60,5 +62,36 @@ class GameServiceTest {
         action.setAmount(20);
         GameView after = gameService.applyAction(table.getId(), action);
         assertThat(after.getState().getPot()).isGreaterThanOrEqualTo(40);
+    }
+
+    @Test
+    void rejectsMissingTableRequest() {
+        assertThatThrownBy(() -> gameService.createTable(null))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("Table configuration is required");
+    }
+
+    @Test
+    void rejectsInvalidBlindConfiguration() {
+        TableRequest invalid = new TableRequest();
+        invalid.setSmallBlind(20);
+        invalid.setBigBlind(20);
+        invalid.setInitialStack(1000);
+
+        assertThatThrownBy(() -> gameService.createTable(invalid))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("Big blind must exceed small blind");
+    }
+
+    @Test
+    void rejectsStackBelowBlinds() {
+        TableRequest invalid = new TableRequest();
+        invalid.setSmallBlind(10);
+        invalid.setBigBlind(20);
+        invalid.setInitialStack(10);
+
+        assertThatThrownBy(() -> gameService.createTable(invalid))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessageContaining("Initial stack must at least cover blinds");
     }
 }

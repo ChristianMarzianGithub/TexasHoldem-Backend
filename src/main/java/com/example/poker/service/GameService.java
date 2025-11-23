@@ -24,6 +24,18 @@ public class GameService {
     }
 
     public synchronized Table createTable(TableRequest request) {
+        if (request == null) {
+            throw new ResponseStatusException(BAD_REQUEST, "Table configuration is required");
+        }
+        if (request.getSmallBlind() < 1 || request.getBigBlind() < 1 || request.getInitialStack() < 1) {
+            throw new ResponseStatusException(BAD_REQUEST, "Blinds and stacks must be positive");
+        }
+        if (request.getBigBlind() <= request.getSmallBlind()) {
+            throw new ResponseStatusException(BAD_REQUEST, "Big blind must exceed small blind");
+        }
+        if (request.getInitialStack() < request.getBigBlind() * 2) {
+            throw new ResponseStatusException(BAD_REQUEST, "Initial stack must at least cover blinds");
+        }
         Table table = new Table(request.getSmallBlind(), request.getBigBlind(), request.getInitialStack());
         tables.put(table.getId(), table);
         gameStates.put(table.getId(), new GameState(table.getId()));
