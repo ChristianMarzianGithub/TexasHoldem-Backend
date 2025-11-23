@@ -29,6 +29,8 @@ For a machine-readable description of every endpoint, see `openapi/openapi.yaml`
 - `smallBlind` and `bigBlind` must be positive.
 - `bigBlind` must be greater than `smallBlind`.
 - `initialStack` must be large enough to post both blinds (at least `2 * bigBlind`).
+- Requests missing a body or containing invalid blind values return `400 Bad Request` with a descriptive message rather than
+  a generic server error.
 
 ### Testing
 ```bash
