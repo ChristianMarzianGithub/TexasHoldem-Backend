@@ -33,6 +33,12 @@ For a machine-readable description of every endpoint, see `openapi/openapi.yaml`
   a generic server error.
 - Table responses expose configuration and seating only; internal deck state is always hidden from API consumers.
 
+#### Player join requirements
+- `name` and `type` are required on `/api/tables/{tableId}/players` requests.
+- Human seats must include a valid `userId` that was previously registered; missing or unknown user IDs are rejected with
+  meaningful `400`/`404` responses instead of server errors.
+- Full tables return `409 Conflict` to signal the capacity constraint.
+
 ### Testing
 ```bash
 mvn test

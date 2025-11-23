@@ -44,6 +44,15 @@ public class GameService {
 
     public synchronized Player addPlayer(String tableId, PlayerRequest request) {
         Table table = getTableOrThrow(tableId);
+        if (request == null) {
+            throw new ResponseStatusException(BAD_REQUEST, "Player request is required");
+        }
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new ResponseStatusException(BAD_REQUEST, "Player name is required");
+        }
+        if (request.getType() == null) {
+            throw new ResponseStatusException(BAD_REQUEST, "Player type is required");
+        }
         if (table.getPlayers().size() >= Table.MAX_PLAYERS) {
             throw new ResponseStatusException(CONFLICT, "Table is full");
         }
@@ -55,7 +64,11 @@ public class GameService {
             userService.findById(userId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User not found"));
         }
         Player player = new Player(request.getName(), request.getType(), userId, table.getInitialStack());
-        table.addPlayer(player);
+        try {
+            table.addPlayer(player);
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(CONFLICT, ex.getMessage());
+        }
         return player;
     }
 
