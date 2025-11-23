@@ -51,6 +51,9 @@ class GameServiceTest {
     void playerCanCallAndAdvance() {
         gameService.startGame(table.getId());
         GameState state = gameService.getGameState(table.getId(), hero.getId()).getState();
+        if (!table.getPlayers().get(state.getCurrentPlayerIndex()).getId().equals(hero.getId())) {
+            gameService.botsAct(table.getId());
+        }
         PlayerAction action = new PlayerAction();
         action.setPlayerId(hero.getId());
         action.setAction(PlayerActionType.CALL);

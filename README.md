@@ -29,6 +29,8 @@ For a machine-readable description of every endpoint, see `openapi/openapi.yaml`
 ```bash
 mvn test
 ```
+Tests include basic flow coverage for blinds, turn order, and action validation. Ensure bots act first in heads-up situations
+before submitting a human action.
 
 ## Frontend (React + Vite + Material UI)
 Frontend lives in `/frontend` and communicates with the backend API.
