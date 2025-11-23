@@ -1,0 +1,323 @@
+openapi: 3.0.3
+info:
+  title: Texas Hold'em Backend API
+  version: 1.1.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/users:
+    post:
+      summary: Register a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /api/users/login:
+    post:
+      summary: Login and obtain a token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Login success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /api/tables:
+    post:
+      summary: Create a table
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableRequest'
+      responses:
+        '201':
+          description: Table created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Table'
+  /api/tables/{tableId}/players:
+    post:
+      summary: Seat a player
+      parameters:
+        - in: path
+          name: tableId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerRequest'
+      responses:
+        '201':
+          description: Player added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+  /api/tables/{tableId}:
+    get:
+      summary: Get table info
+      parameters:
+        - in: path
+          name: tableId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Table details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Table'
+  /api/tables/{tableId}/start:
+    post:
+      summary: Start a new hand
+      parameters:
+        - in: path
+          name: tableId
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameView'
+  /api/tables/{tableId}/state:
+    get:
+      summary: Get game state
+      parameters:
+        - in: path
+          name: tableId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: playerId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameView'
+  /api/tables/{tableId}/action:
+    post:
+      summary: Apply a player action
+      parameters:
+        - in: path
+          name: tableId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerAction'
+      responses:
+        '200':
+          description: Updated game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameView'
+  /api/tables/{tableId}/bots/act:
+    post:
+      summary: Trigger bot actions
+      parameters:
+        - in: path
+          name: tableId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Updated game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameView'
+  /api/tables/{tableId}/next-hand:
+    post:
+      summary: Start the next hand
+      parameters:
+        - in: path
+          name: tableId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: New game state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameView'
+components:
+  schemas:
+    UserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required: [username, password]
+    UserResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+        token:
+          type: string
+    TableRequest:
+      type: object
+      properties:
+        smallBlind:
+          type: integer
+        bigBlind:
+          type: integer
+        initialStack:
+          type: integer
+      required: [smallBlind, bigBlind, initialStack]
+    PlayerRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [HUMAN, BOT]
+        userId:
+          type: string
+      required: [name, type]
+    PlayerAction:
+      type: object
+      properties:
+        playerId:
+          type: string
+        action:
+          type: string
+          enum: [FOLD, CHECK, CALL, BET, RAISE]
+        amount:
+          type: integer
+    Card:
+      type: object
+      properties:
+        rank:
+          type: string
+        suit:
+          type: string
+    Player:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        userId:
+          type: string
+        stack:
+          type: integer
+        currentBet:
+          type: integer
+        folded:
+          type: boolean
+        seatPosition:
+          type: integer
+        holeCards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+    Table:
+      type: object
+      properties:
+        id:
+          type: string
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+        dealerPosition:
+          type: integer
+        smallBlind:
+          type: integer
+        bigBlind:
+          type: integer
+        initialStack:
+          type: integer
+    GameState:
+      type: object
+      properties:
+        tableId:
+          type: string
+        phase:
+          type: string
+        communityCards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        pot:
+          type: integer
+        currentBet:
+          type: integer
+        currentPlayerIndex:
+          type: integer
+        winners:
+          type: array
+          items:
+            type: string
+        handRanks:
+          type: object
+          additionalProperties:
+            type: string
+    GameView:
+      type: object
+      properties:
+        table:
+          $ref: '#/components/schemas/Table'
+        state:
+          $ref: '#/components/schemas/GameState'
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
