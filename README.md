@@ -45,8 +45,9 @@ mvn test
 ```
 Tests include basic flow coverage for blinds, turn order, and action validation. Ensure bots act first in heads-up situations
 before submitting a human action. Bot turn handling now halts once the next actor is human to avoid advancing through an entire
-hand without input. Integration tests also verify game start edge cases (requiring two players) and the `/bots/act` endpoint to
-ensure control returns to humans as expected via the REST API surface.
+hand without input. Integration tests also verify game start edge cases (requiring two players), `/bots/act` behavior to ensure
+control returns to humans, and table capacity enforcement so attempts to add a sixth player return `409 Conflict` instead of a
+server error.
 
 The Maven compiler is configured with the `-parameters` flag so Spring can reliably bind `@PathVariable` arguments without
 explicit names; keep this enabled when adjusting build settings.

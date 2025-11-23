@@ -31,7 +31,8 @@ Compiled assets are emitted to `dist/`.
 ```bash
 npm test
 ```
-Runs Vitest with jsdom and React Testing Library.
+Runs Vitest with jsdom and React Testing Library. Coverage includes context wiring (backend URL propagation), landing page
+flows for create-and-join interactions, and core table rendering behaviors.
 
 ## Docker
 Build the production image:

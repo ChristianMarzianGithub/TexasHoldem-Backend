@@ -155,6 +155,29 @@ class TableControllerTest {
                 .andExpect(jsonPath("$.stack").value(1000));
     }
 
+    @Test
+    void rejectsAddingBeyondTableCapacity() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            String payload = objectMapper.writeValueAsString(new PlayerRequestBuilder()
+                    .name("Bot" + i)
+                    .type("BOT"));
+
+            mockMvc.perform(post(getPlayersUrl())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(payload))
+                    .andExpect(status().isCreated());
+        }
+
+        String overflowPayload = objectMapper.writeValueAsString(new PlayerRequestBuilder()
+                .name("Overflow")
+                .type("BOT"));
+
+        mockMvc.perform(post(getPlayersUrl())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(overflowPayload))
+                .andExpect(status().isConflict());
+    }
+
     private String getPlayersUrl() {
         String id = tableId.replaceAll(".*\"id\":\"([^\"]+)\".*", "$1");
         return "/api/tables/" + id + "/players";
