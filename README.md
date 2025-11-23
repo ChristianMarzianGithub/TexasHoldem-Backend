@@ -49,6 +49,9 @@ hand without input. Integration tests also verify game start edge cases (requiri
 control returns to humans, and table capacity enforcement so attempts to add a sixth player return `409 Conflict` instead of a
 server error.
 
+When writing new integration tests that register users, prefer unique usernames (e.g., appending a UUID) to avoid conflicts with
+stateful in-memory users created in earlier test methods.
+
 The Maven compiler is configured with the `-parameters` flag so Spring can reliably bind `@PathVariable` arguments without
 explicit names; keep this enabled when adjusting build settings.
 

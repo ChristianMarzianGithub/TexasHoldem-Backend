@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -131,7 +133,8 @@ class TableControllerTest {
 
     @Test
     void addHumanPlayerSucceedsWhenUserExists() throws Exception {
-        String userPayload = "{\"username\":\"hero\",\"password\":\"secret\"}";
+        String username = "hero" + UUID.randomUUID();
+        String userPayload = "{\"username\":\"" + username + "\",\"password\":\"secret\"}";
         String userId = mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userPayload))
