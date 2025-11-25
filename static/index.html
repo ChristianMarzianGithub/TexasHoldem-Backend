@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Texas Hold'em vs Bot</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Texas Hold'em Trainer</h1>
+      <button id="new-game">New Game</button>
+    </header>
+    <main>
+      <section class="status">
+        <div class="chips">Player Chips: <span id="player-chips">-</span></div>
+        <div class="chips">Bot Chips: <span id="bot-chips">-</span></div>
+        <div class="pot">Pot: <span id="pot">-</span> | Current Bet: <span id="current-bet">-</span></div>
+        <div class="message" id="message">Press New Game to begin.</div>
+      </section>
+      <section class="table">
+        <div class="hand">
+          <h2>Your Hand</h2>
+          <div id="player-hand" class="cards"></div>
+        </div>
+        <div class="community">
+          <h2>Community Cards</h2>
+          <div id="community-cards" class="cards"></div>
+        </div>
+      </section>
+      <section class="controls">
+        <div class="actions">
+          <button data-action="check" class="action">Check</button>
+          <button data-action="call" class="action">Call</button>
+          <button data-action="fold" class="action">Fold</button>
+        </div>
+        <div class="raise">
+          <label for="raise-amount">Raise Amount</label>
+          <input type="number" id="raise-amount" value="30" min="10" step="10">
+          <button id="raise-btn">Raise</button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
